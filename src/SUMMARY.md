@@ -12,7 +12,7 @@
     - [Library Support](FundamentalDataTypes/CharTypes_LibrarySuppor.md)
  
 - [Initialization](Initialization/README.md)
-  - [Non-static Data Members Default Initialization](Initialization/NonStaticDataMemberDefaultInit.md)
+  - [Non-static Data Members](Initialization/NonStaticDataMemberDefaultInit.md)
   - [List Initialization](Initialization/ListInit.md)
   - [Structured Binding](Initialization/StructuredBinding.md)
 

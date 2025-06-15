@@ -15,7 +15,6 @@ The table below summarizes C++ type deduction features and their respective intr
 | **Non-type template deduction**    | `auto`                       | Deduce type of constant template parameter               | C++17      |
 | **Abbreviated function templates** | `auto` in function param     | Template parameter deduction in normal function syntax   | C++20      |
 | **Constrained deduction**          | Concepts + `auto`            | Adds semantic constraints to type deduction              | C++20      |
-| **Aggregate member with auto**     | `auto` in struct/class field | Supports `auto` members with initializer in aggregates   | C++20      |
 | **Compile-time enforcement**       | `consteval`, `constinit`     | Restricts deduction to compile-time context              | C++20      |
 
 ## Examples
@@ -160,17 +159,6 @@ void log(Printable auto x) {
 }
 ```
 Concepts restrict template parameters to types satisfying specified requirements. The example ensures that x is printable to an output stream.
-
-### Aggregate Initialization with Deduction
-
-```cpp
-struct Data {
-    auto x = 0;   
-};
-```
-Since C++20, the use of `auto` in aggregate member declarations is permitted when accompanied by a default initializer. 
-
-> ⚠️ In short: A simple struct with public fields and no fancy behavior is usually an aggregate. Prior to C++20, an aggregate does not permit member declaration using `auto`. But this restriction is relaxed with C++20, as long as a default initializer is provided.
 
 ### `consteval` and `constinit` Impact
 

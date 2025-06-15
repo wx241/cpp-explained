@@ -18,7 +18,6 @@ C++ was designed with backward compatibility to C, allowing developers to use C-
 This book expects readers to have a basic knowledge of C++ and a genuine interest in evolving their skills in modern C++. Most chapters are beginner-friendly, while some need extra focus. Advanced meta-template programming topics may require multiple readings but can be skipped initially. Beginners should refer to other C++ books for fundamental guidance.
 
 ## What this book covers
-This book focuses on helping readers understand the rationale behind new C++11 to C++20 features, discussing past C++ limitations, and examining how these features address and optimize those issues. Wherever necessary, it also explains how new features are implemented in compilers. Code samples are tested using GCC, Clang, and MSVC. 
-
+This book focuses on helping readers learn and understand new C++11 to C++20 features. Where necessary, it also explains how new features are implemented in compilers.  
 
 
