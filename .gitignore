@@ -1,1 +1,5 @@
-book
+# mdBook build output
+/book/
+
+# Editor settings
+.vscode/

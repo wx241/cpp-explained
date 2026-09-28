@@ -1,3 +1,4 @@
 @echo off
-cd "C:\GitBooks\cpp-explained"
-mdbook serve --dest-dir "C:\GitBooks\cpp-explained-book\book"
+REM Live-preview the book at http://localhost:3000 (output goes to the book folder, which is gitignored)
+cd /d "%~dp0"
+mdbook serve --open
