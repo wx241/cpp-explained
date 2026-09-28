@@ -9,7 +9,7 @@
     - [Sets and Encodings](FundamentalDataTypes/CharTypes_CharSetsEncodings.md)
     - [New Types](FundamentalDataTypes/CharTypes_NewCharTypes.md)
     - [Concatenation](FundamentalDataTypes/CharTypes_StringLiteralCat.md)
-    - [Library Support](FundamentalDataTypes/CharTypes_LibrarySuppor.md)
+    - [Library Support](FundamentalDataTypes/CharTypes_LibrarySupport.md)
  
 - [Initialization](Initialization/README.md)
   - [Non-static Data Members](Initialization/NonStaticDataMemberDefaultInit.md)
@@ -35,14 +35,14 @@
 
 - [`Type Deduction`](TypeDeduction/README.md)
   - [`Introduction`](TypeDeduction/Introduction.md)
-  - [`Mechanisms`](TypeDeduction/Mechnisms.md)
+  - [`Mechanisms`](TypeDeduction/Mechanisms.md)
   - [`Rules`](TypeDeduction/Rules.md)
   - [`Best Practices`](TypeDeduction/BestPractices.md)
   
   
 - [`Type Introspection`](TypeIntrospection/README.md)
   - [`Introduction`](TypeIntrospection/Introduction.md)
-  - [`Mechanisms`](TypeIntrospection/Mechnisms.md)
+  - [`Mechanisms`](TypeIntrospection/Mechanisms.md)
   - [`Rules`](TypeIntrospection/Rules.md)
   - [`Best Practices`](TypeIntrospection/BestPractices.md)  
  
@@ -61,9 +61,9 @@
 - [Control Flow](ControlFlow/README.md)
 
 
-- [Exceptions and Assertion](ExceptionAndAssertation/README.md)
-  - [`static_assert`](ExceptionAndAssertation/StaticAssert.md)
-  - [`noexcept`](ExceptionAndAssertation/NoExcept.md)
+- [Exceptions and Assertion](ExceptionAndAssertion/README.md)
+  - [`static_assert`](ExceptionAndAssertion/StaticAssert.md)
+  - [`noexcept`](ExceptionAndAssertion/NoExcept.md)
 
 
 - [Class](Class/README.md)
