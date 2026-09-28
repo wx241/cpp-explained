@@ -60,9 +60,9 @@ With C++17’s class template argument deduction (CTAD), the same declaration be
 
 ```cpp
 auto pq = std::priority_queue{
-    std::vector<std::pair<int, int>>{},
-    comp
-};
+    comp,
+    std::vector<std::pair<int, int>>{}
+};  // uses the deduction guide priority_queue(Compare, Container)
 ```
 
 `auto` helps avoid repeating long type names:

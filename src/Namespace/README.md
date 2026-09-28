@@ -7,7 +7,7 @@ Namespaces were introduced into the C++ standard with the release of C++98. The 
 ```cpp
 // Declaration of a namespace
 namespace MyNamespace {
-    int x;
+    extern int x;   // declaration only
     void foo();
 }
 

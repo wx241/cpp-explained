@@ -15,7 +15,6 @@ The table below summarizes C++ type deduction features and their respective intr
 | **Non-type template deduction**    | `auto`                       | Deduce type of constant template parameter               | C++17      |
 | **Abbreviated function templates** | `auto` in function param     | Template parameter deduction in normal function syntax   | C++20      |
 | **Constrained deduction**          | Concepts + `auto`            | Adds semantic constraints to type deduction              | C++20      |
-| **Compile-time enforcement**       | `consteval`, `constinit`     | Restricts deduction to compile-time context              | C++20      |
 
 ## Examples
 
@@ -46,7 +45,7 @@ void print(T value) {
 
 print(10);   // T is deduced as int
 ```
-Template arguments are deduced from the function call's parameter types.
+Template arguments are deduced from the types of the function call's arguments.
 
 ### Return Type Deduction
 
@@ -101,10 +100,10 @@ void f() {
 int main() {
     f<5>();     // OK: N is deduced as int
     f<'c'>();   // OK: N is deduced as char
-    f<5.0>();   // ❌ Error: double is not a valid non-type template parameter
+    f<5.0>();   // OK since C++20: N is deduced as double (ill-formed in C++17)
 }
 ```
-Starting with C++17, non-type template parameters can use auto to infer both the value and the type. In C++20, non-type template parameters (NTTPs) were enhanced to allow a broader set of types, but floating-point types (float, double, long double) are still not allowed as non-type template parameters.
+Starting with C++17, non-type template parameters can use auto to infer both the value and the type. In C++20, non-type template parameters (NTTPs) were enhanced to allow a broader set of types, including floating-point types (`float`, `double`, `long double`) and literal class types that are *structural* (P1907R1).
 
 For example, the following class `Color` is a literal class type with structural semantics, and can be used as NTTP:
 ```cpp
@@ -129,8 +128,10 @@ int main() {
 But the following can not:
 
 ```cpp
-struct NonStructural {
-    double d;  // ❌ double is not allowed in structural types, due to comparison and representation issues.
+class NonStructural {
+    int d;  // ❌ a private (or mutable) non-static data member makes the type non-structural
+public:
+    constexpr NonStructural(int v) : d(v) {}
     constexpr bool operator==(const NonStructural&) const = default;
 };
 

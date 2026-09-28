@@ -1,6 +1,6 @@
 # Unnamed Namespace
 
-The `unnamed namespace` (or anonymous namespace) is a feature in C++ that was introduced in the C++98 standard. It provides a way to declare identifiers (e.g., functions, variables, or types) with internal linkage, meaning they are only visible within the scope of their parent namespace, or translation unit (i.e., the source file) in which they are defined.
+The `unnamed namespace` (or anonymous namespace) is a feature in C++ that was introduced in the C++98 standard. It provides a way to declare identifiers (e.g., functions, variables, or types) that are only visible within the scope of their parent namespace, or translation unit (i.e., the source file) in which they are defined. In C++98 such names formally had external linkage but lived in a namespace with a unique, unutterable name; since C++11 they have internal linkage.
 
 `Unnamed namespaces` can be declared using the `namespace` keyword, followed by a pair of braces, like this:
 

@@ -133,7 +133,7 @@ decltype(auto)* p2 = &i;    // ❌ Error: decltype(auto) must appear alone
 
 ### Return Type Use Case
 
-Before C++14, returning references required a trailing return type:
+Before C++14, a function declared with `auto` required a trailing return type:
 
 ```cpp
 template<class T>
@@ -165,7 +165,7 @@ static const int x = 11;
 static int y = 7;
 
 int main() {
-    f<x>();     // N deduced as const int
+    f<x>();     // N deduced as int (top-level const is dropped for NTTPs)
     f<(x)>();   // N deduced as const int&
     f<y>();     // ❌ Error: y is not a constant expression
     f<(y)>();   // N deduced as int&

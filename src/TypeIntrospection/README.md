@@ -1,4 +1,4 @@
- # Type Query
+# Type Introspection
 
 This chapter presents a focused exploration of type query mechanisms in modern C++, emphasizing `decltype` and its interaction with value categories and type deduction. 
 

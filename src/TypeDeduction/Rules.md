@@ -6,7 +6,7 @@ However, deduction follows a set of specific rules, especially regarding referen
 
 The following summarizes the key rules with examples and explanations.
 
-## Rule 1: **Top-Level CV Qualifiers Are Discarded During Value Initialization**
+## Rule 1: **Top-Level CV Qualifiers Are Discarded When Deducing by Value**
 
 When `auto` is used to declare a variable and the initializer is a value (i.e. not a reference or pointer), any top-level `const` or `volatile` qualifiers in the initializer's type are ignored.
 
@@ -112,7 +112,7 @@ b.f();         // calls Base::f() due to object slicing
 ```
 
 **Explanation:**  
-- `*d` yields a `Base&`, but since `b` is declared with `auto` (not `auto&`), the result is value-initialized.
+- `*d` yields a `Base&`, but since `b` is declared with `auto` (not `auto&`), `b` is copy-initialized from it.
 - This results in **object slicing**, where the `Derived` part of the object is sliced off, and `b` becomes a pure `Base` object.
 - As a result, the virtual function call resolves to `Base::f()`.
 

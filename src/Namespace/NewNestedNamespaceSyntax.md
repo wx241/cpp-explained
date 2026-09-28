@@ -12,7 +12,7 @@ namespace A {
 }
 ```
 
-With C++17, the same nested namespaces can be defined using the inline syntax concisely:
+With C++17, the same nested namespaces can be defined concisely using the nested namespace definition syntax:
 
 ```cpp
 namespace A::B::C {
@@ -20,7 +20,7 @@ namespace A::B::C {
 }
 ```
 
-Both of these code snippets achieve the same result: defining a function `foo()` in the namespace `A::B::C`. The inline namespace definition syntax introduced in C++17 allows for a more compact and readable way to define nested namespaces.
+Both of these code snippets achieve the same result: defining a function `foo()` in the namespace `A::B::C`. The nested namespace definition syntax introduced in C++17 allows for a more compact and readable way to define nested namespaces.
 
 ## Nested inline namespace
 

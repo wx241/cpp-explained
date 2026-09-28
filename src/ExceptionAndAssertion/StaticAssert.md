@@ -90,7 +90,7 @@ static_assert(sizeof(int) >= 4);
 - Runtime values (e.g., function arguments or user input).
 - Conditions that depend on external input or file contents.
 
-**Example o Invalid Use:**
+**Example of Invalid Use:**
 
 ```cpp
 int main(int argc, char* argv[]) {

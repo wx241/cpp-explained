@@ -10,7 +10,7 @@
     - [New Types](FundamentalDataTypes/CharTypes_NewCharTypes.md)
     - [Concatenation](FundamentalDataTypes/CharTypes_StringLiteralCat.md)
     - [Library Support](FundamentalDataTypes/CharTypes_LibrarySupport.md)
- 
+
 - [Initialization](Initialization/README.md)
   - [Non-static Data Members](Initialization/NonStaticDataMemberDefaultInit.md)
   - [List Initialization](Initialization/ListInit.md)
@@ -18,35 +18,35 @@
 
 - [Memory Alignment](MemoryAlignment/README.md)
 
-- [`Compile Time Evaluation`](CompileTimeEvaluation/README.md)
+- [Compile Time Evaluation](CompileTimeEvaluation/README.md)
   - [`constexpr`](CompileTimeEvaluation/ConstExpr.md)
   - [`std::numeric_limits`](CompileTimeEvaluation/NumericLimit.md)
   - [Math functions](CompileTimeEvaluation/MathFunctions.md)
   - [Lambdas](CompileTimeEvaluation/Lambdas.md)
   - [Inlining `constexpr`](CompileTimeEvaluation/InliningConstExpr.md)
-  - [Conditional Compilation ](CompileTimeEvaluation/ConditionalCompilation.md)
+  - [Conditional Compilation](CompileTimeEvaluation/ConditionalCompilation.md)
   - [Virtual Functions](CompileTimeEvaluation/VirtualFunctions.md)
-  - [`try-catch` ](CompileTimeEvaluation/TryCatch.md)
+  - [`try-catch`](CompileTimeEvaluation/TryCatch.md)
   - [`constexpr` Object](CompileTimeEvaluation/DefaultInit.md)
   - [`consteval` and `constinit`](CompileTimeEvaluation/ConstEvalAndConstInit.md)
   - [`std::is_constant_evaluated`](CompileTimeEvaluation/StdIsConstant.md)
   - [Other Enhancements](CompileTimeEvaluation/OtherEnhancements.md)
-  
 
-- [`Type Deduction`](TypeDeduction/README.md)
-  - [`Introduction`](TypeDeduction/Introduction.md)
-  - [`Mechanisms`](TypeDeduction/Mechanisms.md)
-  - [`Rules`](TypeDeduction/Rules.md)
-  - [`Best Practices`](TypeDeduction/BestPractices.md)
-  
-  
-- [`Type Introspection`](TypeIntrospection/README.md)
-  - [`Introduction`](TypeIntrospection/Introduction.md)
-  - [`Mechanisms`](TypeIntrospection/Mechanisms.md)
-  - [`Rules`](TypeIntrospection/Rules.md)
-  - [`Best Practices`](TypeIntrospection/BestPractices.md)  
- 
- 
+
+- [Type Deduction](TypeDeduction/README.md)
+  - [Introduction](TypeDeduction/Introduction.md)
+  - [Mechanisms](TypeDeduction/Mechanisms.md)
+  - [Rules](TypeDeduction/Rules.md)
+  - [Best Practices](TypeDeduction/BestPractices.md)
+
+
+- [Type Introspection](TypeIntrospection/README.md)
+  - [Introduction](TypeIntrospection/Introduction.md)
+  - [Mechanisms](TypeIntrospection/Mechanisms.md)
+  - [Rules](TypeIntrospection/Rules.md)
+  - [Best Practices](TypeIntrospection/BestPractices.md)
+
+
 - [Namespace](Namespace/README.md)
   - [Inline](Namespace/InlineNamespace.md)
   - [Nested](Namespace/NewNestedNamespaceSyntax.md)
@@ -55,7 +55,7 @@
   - [Global](Namespace/GlobalNamespace.md)
 
 
-- [Program Structure](ProgramStructure/README.md)  
+- [Program Structure](ProgramStructure/README.md)
 
 
 - [Control Flow](ControlFlow/README.md)
@@ -72,19 +72,19 @@
 - [Value Syntax](ValueSyntax/README.md)
 
 
-- [Template and Generic Programming](TemplateAndGenericProgramming/README.md)
+- [Templates and Generic Programming](TemplateAndGenericProgramming/README.md)
 
 
 - [Ranges and View](RangeAndView/README.md)
-  
+
 
 - [Concurrency](Concurrency/README.md)
-  
+
 
 - [Attributes and Preprocessor](AttributeAndPreprocessor/README.md)
-  
+
 
 - [Semantics Improvements](SemanticsImprovements/README.md)
-  
+
   - [`inline` Specifier](SemanticsImprovements/InlineSpecifier.md)
   - [Miscellaneous](SemanticsImprovements/Misc.md)

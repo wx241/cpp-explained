@@ -13,7 +13,7 @@ In typical application development, `decltype` may not be used extensively. Howe
 * Prefer `auto` for readability when exact type preservation is not critical.
 * Use `decltype` when querying the result of complex expressions, especially in templates.
 * ***Wrap expressions in parentheses*** when necessary to ensure correct cv/ref deduction.
-* Avoid using `decltype` in evaluated contexts—combine it with unevaluated tools like `std::declval`.
+* The operand of `decltype` is never evaluated; combine it with `std::declval` to form expressions on types that cannot (or should not) be constructed.
 
 ### Advanced Use Cases
 

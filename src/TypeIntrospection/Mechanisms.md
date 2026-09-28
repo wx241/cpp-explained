@@ -73,7 +73,7 @@ static_assert(
 
 ## 2. Type Identification Operator `typeid` (Runtime) 
 
-`typeid(expr)` yields a reference to a `std::type_info` object representing the type of the expression. It is evaluated at runtime and is primarily useful when working with polymorphic types.
+`typeid(expr)` yields a reference to a `std::type_info` object representing the type of the expression. For a glvalue of polymorphic class type (e.g. through a base reference), it is evaluated at runtime and yields the dynamic type; otherwise it is resolved at compile time to the static type. It is primarily useful when working with polymorphic types.
 
 ### Example:
 ```cpp
@@ -90,7 +90,7 @@ void printType(int x) {
 ### Note
 
 1. **Return Value Lifetime**  
-   The return value of `typeid` is a **lvalue** reference to a `const std::type_info` object.  Its **lifetime is extended to the entire lifetime of the program** — it is safe to store the reference or pointer.
+   The return value of `typeid` is an **lvalue** reference to a `const std::type_info` object.  Its **lifetime is extended to the entire lifetime of the program** — it is safe to store the reference or pointer.
 
 2. **No Copy Constructor**  
    `std::type_info` has a **deleted copy constructor**, so it cannot be copied. Attempting to assign it directly as a value will result in a compilation error.
@@ -166,7 +166,7 @@ Type traits enable generic code to adapt behavior based on type properties or to
 | Mechanism            | Compile-Time | Runtime | Key Use Cases                          |
 |----------------------|--------------|---------|----------------------------------------|
 | `decltype(expr)`     | ✅           | ❌      | Exact type inference of expressions    |
-| `typeid(expr)`       | ❌           | ✅      | Runtime type information, polymorphism |
+| `typeid(expr)`       | ✅ (non-polymorphic) | ✅ (polymorphic) | Runtime type information, polymorphism |
 | `std::declval<T>()`  | ✅           | ❌      | Simulated expressions in decltype      |
 | Type Traits          | ✅           | ❌      | Type inspection, manipulation, SFINAE  |
 

@@ -20,7 +20,7 @@ void foo() throw();                   // Not supposed to throw any exceptions
 void bar() throw(std::runtime_error); // Supposed to throw only specific exceptions
 ```
 
-These had weak compiler enforcement and inconsistent support. Worse, `throw()` required stack unwinding and called `std::unexpected()` on violation. In C++ 20, `throw()` is removed entirely.
+These had weak compiler enforcement and inconsistent support. Worse, a violated dynamic exception specification required stack unwinding and called `std::unexpected()`. Dynamic exception specifications were deprecated in C++11 and removed in C++17 (`throw()` survived in C++17 only as a synonym for `noexcept(true)`, and was removed in C++20).
 
 In contrast, `noexcept` calls `std::terminate()` directly, avoiding complex runtime behavior and enabling better optimizations.
 
@@ -162,7 +162,7 @@ void (*fp)() noexcept = foo; // ERROR in C++17, not compatible type
 
 The two function types are not compatible anymore, enhancing type safety.
 
-## `noexcept` with Lambdas (C++20)
+## `noexcept` with Lambdas
 
 ```cpp
 auto f = []() noexcept { return 42; };
@@ -170,17 +170,17 @@ static_assert(noexcept(f()));
 
 ```
 
-Before C++20, you couldn't specify noexcept on lambdas unless you wrote a full trailing return type with it.
+Lambdas could be marked `noexcept` since C++11. Since C++23 (P1102), the empty parameter list may be omitted: `auto g = [] noexcept { return 42; };`.
 
 ## Support for `consteval` and Immediate Functions (C++20)
-C++20's `consteval` and `constinit` features pair well with noexcept, allowing better compile-time enforcement:
+C++20's `consteval` functions can also be declared `noexcept`:
 
 ```cpp
 consteval int f() noexcept {
     return 42;
 }
 ```
-If such a function throws or allows throwing, the compiler gives an error — reinforcing that throwing in constant-evaluated code is forbidden.
+Note that `noexcept` is not what enforces compile-time safety here: any `throw` reached during constant evaluation already makes the call fail to be a constant expression, so a `consteval` call that would throw is a compile error with or without `noexcept`.
 
 ## When to Use `noexcept`
 

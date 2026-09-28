@@ -35,7 +35,7 @@ namespace MyLib {
 }
 */
 
-// Updated version of the library, in an inline namespace
+// Updated library: v1 stays the default through an inline namespace; v2 is opt-in
 namespace MyLib {
     inline namespace v1 {
         void foo() {
@@ -52,8 +52,8 @@ namespace MyLib {
 
 // Usage of the library
 int main() {
-    MyLib::foo();     // calls the initial version of foo
-    MyLib::v2::foo(); // calls the updated version of foo
+    MyLib::foo();     // calls v1::foo (the inline, default version)
+    MyLib::v2::foo(); // calls the new version explicitly
     return 0;
 }
 ```
@@ -64,3 +64,5 @@ This code demonstrates how backward compatibility is maintained in a library cal
 Hello, World!
 Hello, C++11!
 ```
+
+Here `v1` is kept inline so that existing callers of `MyLib::foo()` keep the old behavior. When a library wants the *newest* version to become the default instead, it moves `inline` to that namespace (e.g., `inline namespace v2`), and old code can still reach the previous version explicitly as `MyLib::v1::foo()`.
