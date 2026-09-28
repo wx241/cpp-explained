@@ -120,7 +120,7 @@ struct Status {
     unsigned int mode  : 2;
 };
 ```
-Here, Status uses just 4 bits instead of 3 full ints, making it memory-efficient—ideal for embedded systems or hardware register mappings. Bitfields improve clarity when working with individual bits, avoiding manual bitmasks. However, they come with drawbacks: layout and alignment are implementation-defined, so bitfields are not portable across compilers; you can't take the address of bitfield members; and access may be slower due to extra masking logic. 
+Here, the three fields share just 4 bits of a single `unsigned int` instead of occupying 3 full ints (`sizeof(Status)` is still typically 4 bytes, because the storage unit is an `unsigned int`), making it memory-efficient—ideal for embedded systems or hardware register mappings. Bitfields improve clarity when working with individual bits, avoiding manual bitmasks. However, they come with drawbacks: layout and alignment are implementation-defined, so bitfields are not portable across compilers; you can't take the address of bitfield members; and access may be slower due to extra masking logic. 
 
 Bitfields are powerful for space-constrained or hardware-close applications, but should be avoided when portability or precise control is required.
 
@@ -139,7 +139,8 @@ struct Flags {
 
     /* 
     error_code is a 3-bit-wide field.  It can represent integer values from 0 to 7 (since 3 bits → 2³ = 8 possibilities).
-    {4} is brace-style default initialization — another valid syntax in C++11 and beyond.
+    {4} is brace-style default initialization. For ordinary data members it has been valid
+    since C++11, but for bitfields both the = and {} forms are only allowed since C++20.
     So, if you don’t explicitly assign error_code, it defaults to 4.
     This might represent a default error type or status code in a compact system.
     */
@@ -173,7 +174,7 @@ struct Settings {
 };
 ```
 
-Now `level` will default to `3`, and `mode` will default `1`.
+Now `level` will default to `3`, and `mode` will default to `1`.
 
 ## Summary
 

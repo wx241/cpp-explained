@@ -13,14 +13,14 @@ const char* utf8_str = "你吃饭了吗?";
 
 If the source file containing the Chinese characters "你吃饭了吗?" is saved as UTF-8 text, then the encoded representation of the text will also be in UTF-8 format. However, if the platform where the code is compiled is using a different encoding, such as Windows-1252, then the compiler may attempt to interpret the Chinese characters as single-byte characters in the Windows-1252 encoding, because the type of the variable `utf8_str` is declared as a plain `char` array, which relies on the execution environment to provide the encoding context. 
 
-For example, the Chinese character "你" is represented by three bytes in UTF-8, which are `0xE4 0xBD 0xA0`. When interpreted as Windows-1252, the first byte `0xE4` is an invalid character, so the compiler replaces it with the ASCII replacement character `0x3F`. As a result, every byte of the UTF-8 encoded string "你吃饭了吗?" is replaced with the ASCII replacement character `0x3F` before being assigned to `utf8_str`. The mismatched data can cause unexpected results and errors in the program. 
+For example, the Chinese character "你" is represented by three bytes in UTF-8, which are `0xE4 0xBD 0xA0`. When interpreted as Windows-1252, these bytes are read as three unrelated characters: `0xE4` becomes "ä", `0xBD` becomes "½", and `0xA0` becomes a non-breaking space. The compiler therefore sees mojibake instead of Chinese text, and bytes that have no mapping in Windows-1252 (such as `0x81` or `0x8D`) may be replaced with `?` (`0x3F`) when the literal is converted to the execution character set. The mismatched data can cause unexpected results and errors in the program. 
 
 ### *Execution environment explained*
 The "execution character set of the platform" refers to the character encoding scheme used by the operating system and/or the compiler to represent text data internally in a computer program.
 
 In C and C++, the execution character set determines how characters are represented in the char data type. The specific character set used can vary depending on the platform, compiler, and locale settings.
 
-For example, on Windows systems, the default execution character set is typically based on the Windows-1252 code page, which is a superset of ASCII that includes characters for European languages. On Unix-based systems, the default execution character set is typically based on the ASCII encoding.
+For example, on Windows systems, the default execution character set is typically based on the Windows-1252 code page, which is a superset of ASCII that includes characters for European languages. On Unix-based systems, the default execution character set is typically UTF-8 (GCC and Clang default to UTF-8).
 
 ## UTF-related character types
 
@@ -28,7 +28,7 @@ For example, on Windows systems, the default execution character set is typicall
 
 In the following code, `utf8_str` will have the correct UTF-8 code point values, regardless of the execution character set of the platform.
 
-  ```cpp
+```cpp
 // char8_t is a new C++20 type. The "u8" prefix makes sure the string literal is 
 // interpreted as UTF-8 encoded text while enforcing type safety with char8_t.
 // Without "u8" prefix, the string literal will be treated as "const char*" type,
@@ -37,7 +37,7 @@ const char8_t* utf8_str = u8"你吃饭了吗?";
 // std::cout << utf8_str << std::endl; // This won't compile
 ```
 
- > In C++20, there is no `char8_t`-aware I/O streams (the overloaded std::cout for `char8_t`, `char16_t` and `char32_t` are marked as "delete". It is expected that the issue will be resolved in C++23 or C++26.
+ > In C++20, there are no `char8_t`-aware I/O streams (the `operator<<` overloads of `std::ostream` for `char8_t`, `char16_t` and `char32_t` characters and strings are declared as deleted). C++23 did not change this, and `std::print` (C++23) also works only with `char`-based text.
 
 `char16_t` and `char32_t` were introduced in C++11 to provide support for Unicode text encoding. `char16_t` represents a 16-bit code unit of UTF-16 encoded Unicode text, while `char32_t` represents a 32-bit code unit of UTF-32 encoded Unicode text. 
 
@@ -47,10 +47,10 @@ const char8_t* utf8_str = u8"你吃饭了吗?";
 | `char16_t`     | C++11         | UTF-16 encoding | `u`          | `const char16_t* str = u"吃了吗";`       |
 | `char32_t`     | C++11         | UTF-32 encoding | `U`          | `const char32_t* str = U"吃了吗";`       |
 
-The string literal prefix `u8`, `u`, `U` were introduced in C++11. The following code won't pass compilation with C++11 because they cannot be applied to characters. It is since C++17 that these literal prefix are allowed to be used with a character.
+The string literal prefixes `u8`, `u`, `U` were introduced in C++11, and C++11 also allowed `u` and `U` on character literals (`u'a'`, `U'a'`). The `u8` prefix, however, could not be applied to a character literal until C++17, so the following code won't pass compilation with C++11/14.
 
 ```cpp
-char utf8c = u8'a'; // C++11 will fail but C++17/20 can pass
+char utf8c = u8'a'; // C++11/14 will fail but C++17/20 can pass
 ```
 
 Also the following code would fail compiling because the value cannot fit a single byte.
@@ -60,7 +60,7 @@ char utf8c = u8'好';
 
 ## Print UTF-8 string to console
 
-`std::cout` cannot be used to output UTF-8 string to console. Use `printf` instead. On Windows, remember to set the active code page of the Windows commandline console to UTF-8 by running `chcp` command first.
+`std::cout` cannot be used to output a `char8_t` (`u8`) string to console, because those overloads are deleted. UTF-8 text stored in plain `char` can be written with `std::cout`, or you can cast the `char8_t` data to `char` and use `printf`, as shown below. On Windows, remember to set the active code page of the Windows commandline console to UTF-8 by running `chcp` command first.
 
 ```bash
 chcp 65001
@@ -68,7 +68,9 @@ chcp 65001
 
 The following code uses `printf` to output an UTF-8 string.
 ```cpp
+#include <cstdio>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -96,11 +98,11 @@ int main() {
        << sizeof(char8_t) 
        << endl; // output 1
   
-  // std::cout << utf8Words << std::endl; // This would fail compiling.  
+  // std::cout << utf8Chars << std::endl; // This would fail compiling.  
   printf("%s", reinterpret_cast<char*>(&utf8Chars[0]));
 
   /*
-  for (std::size_t i = 0; i < len; i++) {
+  for (std::size_t i = 0; i < len_1; i++) {
     std::cout << utf8Chars[i] << '\n'; // This would fail compiling.
   }
   */
@@ -111,7 +113,7 @@ int main() {
 ```
 
 ## Print a character of UTF-8 text to console
-In C++20, the use of the `std::codecvt` facet is deprecated and discouraged. To display a UTF-8 string character on the Windows commandline console, we need to utilize the platform-specific `MultiByteToWideChar` function provided by Windows. This will convert the UTF-8 text to wide characters, which can then be output using `std::wcout`. If we need to access a particular character in the UTF-16 or UTF-32 text based on its position, we should apply the same approach.
+The standard library's Unicode conversion facilities are of little help here: `std::wstring_convert` and the `<codecvt>` facets (`std::codecvt_utf8` and friends) were deprecated in C++17 and removed in C++26, and C++20 deprecated the `std::codecvt<char16_t, char, std::mbstate_t>` and `std::codecvt<char32_t, char, std::mbstate_t>` specializations (the `std::codecvt` template itself is not deprecated). To display a UTF-8 string character on the Windows commandline console, we need to utilize the platform-specific `MultiByteToWideChar` function provided by Windows. This will convert the UTF-8 text to wide characters, which can then be output using `std::wcout`. If we need to access a particular character in the UTF-16 or UTF-32 text based on its position, we should apply the same approach.
 
 ```cpp
 #include <iostream>

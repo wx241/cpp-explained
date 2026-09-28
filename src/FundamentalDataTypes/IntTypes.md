@@ -1,7 +1,7 @@
 # Integer Types
 
 ## Common integer types
-C++ supports several integer types with varying sizes and ranges. Here is a list of the most commonly used integer types in C++, available since the earlier versions of the language. Note that `char` is treated as integer type here for practical reason, though technically it is not.
+C++ supports several integer types with varying sizes and ranges. Here is a list of the most commonly used integer types in C++, available since the earlier versions of the language. Note that `char` is listed here alongside the integer types for practical reasons; technically it is an integral type, but not one of the standard signed or unsigned integer types.
 
 | Type name | Typical Size (in bytes) | Range |
 | --------- | -------------- | ----- |
@@ -32,13 +32,13 @@ sizeof(long)      *  CHAR_BIT >= 32     // Rule 9
 sizeof(long long) *  CHAR_BIT >= 64     // Rule 10
 ```
 
-`CHAR_BIT` represents the number of bits in a char type. Although most modern architectures use 8 bits per byte, this is not always the case as some older machines may have used 7-bit bytes. Under Rule 4, C/C++ allows `long` and `int` to have the same size, but it must be at least 32 bits according to Rule 9.
+`CHAR_BIT` represents the number of bits in a char type. C and C++ require `CHAR_BIT` to be at least 8 (Rule 6). Most architectures use exactly 8 bits per byte, but this is not always the case: some DSPs, for example, have 16-bit or 32-bit `char`. Under Rule 4, C/C++ allows `long` and `int` to have the same size, but it must be at least 32 bits according to Rule 9.
 
 ## Fixed size integer types
 
-The C++11 standard introduced new integer types such as `int8_t`, `int16_t`, `int32_t`, and `int64_t` with fixed sizes, as well as their unsigned counterparts, `uint8_t`, `uint16_t`, `uint32_t`, and `uint64_t`. These types are guaranteed to have the specified size and range on any conforming implementation. 
+The C++11 standard introduced new integer types such as `int8_t`, `int16_t`, `int32_t`, and `int64_t` with fixed sizes, as well as their unsigned counterparts, `uint8_t`, `uint16_t`, `uint32_t`, and `uint64_t`. When provided, these types are guaranteed to have exactly the specified width with no padding bits (and, for the signed types, two's complement representation). They are *optional*, however: an implementation provides them only if it has integer types with those exact properties. The `int_leastN_t` and `int_fastN_t` families are always available.
 
-The following table summarizes fixed size integer types - note that the `intN_t` and `uintN_t` types are guaranteed to have exactly `N` bits, where `N` is 8, 16, 32, or 64.
+The following table summarizes fixed size integer types - note that the `intN_t` and `uintN_t` types, where provided, have exactly `N` bits, where `N` is 8, 16, 32, or 64.
 
 | Type       | Size (in bytes) | Range                                          |
 |------------|----------------|------------------------------------------------|
@@ -54,7 +54,7 @@ The following table summarizes fixed size integer types - note that the `intN_t`
 
 ## 128-bit integer types
 
-The C++ standard does not define a 128-bit integer type, as of the latest version C++20.
+The C++ standard does not define a 128-bit integer type, as of C++23.
 
 However, some compilers and libraries provide extensions that define a 128-bit integer type. For example, the GCC and Clang compilers provide an __int128 type, which is a 128-bit signed integer type. The Boost Multiprecision library provides several integer types with arbitrary precision, including a boost::multiprecision::int128_t type.
 

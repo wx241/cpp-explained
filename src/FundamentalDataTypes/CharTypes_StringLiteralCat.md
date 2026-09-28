@@ -14,7 +14,7 @@ The compiler will automatically concatenate the two string literals, resulting i
 const char* my_string = "Hello,World!";
 ```
 
-> This feature has its roots in the C programming language. It was inherited by C++ in the early 1980s.
+> This feature has its roots in the C programming language: it was introduced by the ANSI C standard (C89) and has been part of standard C++ since C++98.
 
 ## Notes on automatic string literal concatenation
 Some nuances and caveats of using automatic concatenation of adjacent string literals:
@@ -25,7 +25,7 @@ Adjacent string literals can be separated by whitespace, like a `space`, a `tab`
   ```cpp
   const char* my_string = "Hello,""World";
   ```
-The compile will automatically concatenate the adjacent string literals, resulting in the following:
+The compiler will automatically concatenate the adjacent string literals, resulting in the following:
   ```cpp
   const char* my_string = "Hello,World";
 
@@ -75,7 +75,7 @@ int main() {
 In the example above, the + operator is used to concatenate two std::string objects. However, trying to do this with string literals directly will lead to a compilation error:
 
 ```cpp
-const char* result = "Hello, " + "World!" + "Oh Yeah; // NOT valid in C++ (or C)
+const char* result = "Hello, " + "World!" + "Oh Yeah"; // NOT valid in C++ (or C)
 ```
 
 C does not have the `std::string` class and the `+` operator for concatenation. Use functions like `strcat` or `strncat` from the `string.h` library to concatenate character arrays (null-terminated strings). Remember to allocate enough memory for the concatenated result and ensure that the destination string is null-terminated.
@@ -111,7 +111,7 @@ In the above code, we have used two different functions for concatenating string
 - `strncat` function concatenates a specified number of characters (in this case, 4) from  `str2` to the end of `str3` and modifies `str3`. After the strncat operation, `str3` will contain the concatenated string.
 
 The output of the above code will be:
-```c
+```text
 str1 after strcat: Hello, world!
 str3 after strncat: I am a string.worl
 ```

@@ -74,7 +74,7 @@ mov dword ptr [b], 20
 
 ### Direct Initialization
 
-Direct initialization (`()`) calls constructors explicitly without implicit conversions.
+Direct initialization (`()`) considers all constructors, including `explicit` ones. Implicit conversions of the arguments to the constructor's parameter types are still allowed.
 
 | Term                      | Description                                                                 |
 | ------------------------- | --------------------------------------------------------------------------- |
@@ -138,12 +138,12 @@ int main() {
 
 ### How List Initialization Works
 
-List initialization has **multiple mechanisms** with the following precedence:
+List initialization has **multiple mechanisms** with the following precedence (simplified from [dcl.init.list]/3):
 
-1. **`std::initializer_list` constructor** (if available and matches)
-2. **Regular constructor matching** (overload resolution)
-3. **Aggregate initialization** (for aggregate types)
-4. **Value initialization** (for empty braces `{}`)
+1. **Aggregate initialization** (if the type is an aggregate)
+2. **Value initialization** (for empty braces `{}` when the class has a default constructor)
+3. **`std::initializer_list` constructor** (if available and matches)
+4. **Regular constructor matching** (overload resolution over all other constructors)
 
 Examples of different mechanisms:
 
@@ -203,16 +203,18 @@ char a2{x};       // Error: narrowing conversion not allowed
 
 unsigned int u1 = {-1};   // Error: negative to unsigned
 int i1 = {2.5};           // Error: float to int
-float f1{3};              // OK: int to float is safe
+float f1{3};              // OK: 3 is a constant expression that fits exactly in float
+int n = 3;
+float f3{n};              // Error: int to float is narrowing when the source is not a constant
 double d = 3.14159;
 float f2{d};              // Error: potential precision loss
 ```
 
 Narrowing includes:
-- Floating-point to integer conversion
-- Larger to smaller integer types (when value doesn't fit)
-- Integer to floating-point (when not exactly representable)
-- Signed to unsigned (when negative)
+- Floating-point to integer conversion (always)
+- Floating-point to a less precise floating-point type, unless the source is a constant expression whose value is exactly representable
+- Integer (or unscoped enumeration) to floating-point, unless the source is a constant expression whose value fits exactly
+- Integer to an integer type that cannot represent all values of the source type (e.g. larger to smaller, or signed to unsigned), unless the source is a constant expression whose value fits
 
 ### Constructor Preference Gotcha
 

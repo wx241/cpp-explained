@@ -1,12 +1,12 @@
 # Character Types
 
-In C++, `char` is not necessarily the same type as `signed char`, although on most platforms they are equivalent.
+In C++, `char` is never the same type as `signed char`, although on many platforms they have the same range and representation.
 
 The C++ standard defines `char`, `signed char`, and `unsigned char` as three distinct integral types, each with its own range of representable values. The C++ standard does not specify whether `char` is `signed` or `unsigned` by default, which means that it is implementation-defined.
 
-On most platforms, `char` is implemented as a signed type, and its range of representable values is the same as that of `signed char`. However, on some rare platforms, `char` may be implemented as an unsigned type, in which case it would have the same range of representable values as `unsigned char`.
+On x86 and x86-64 (Windows, Linux, macOS), `char` is implemented as a signed type, and its range of representable values is the same as that of `signed char`. However, on other common platforms, such as ARM and PowerPC Linux, `char` is implemented as an unsigned type, in which case it has the same range of representable values as `unsigned char`.
 
-So, while `char` and `signed char` are often the same type in C++, it is not guaranteed by the standard. To ensure portability of code that relies on the signedness of `char`, it is recommended to use `signed char` explicitly.
+So, while `char` often behaves like `signed char`, it is still a distinct type, and its signedness is not guaranteed by the standard. To ensure portability of code that relies on the signedness of `char`, it is recommended to use `signed char` explicitly.
 
 ## Issue with `wchar_t`
 
@@ -43,4 +43,4 @@ The issue with `wchar_t` is that its size is implementation-defined, which means
 
 This lack of standardization has led to portability issues when writing cross-platform code. Code that relies on `wchar_t` may not work as expected when compiled on a different system with a different `wchar_t` size. This can result in problems with data alignment, byte order, and other issues that can cause the program to behave incorrectly.
 
-To address this issue, the C++11 standard introduced new character types, `char16_t` and `char32_t`, which have fixed sizes of 16 and 32 bits, respectively. These types are recommended for use in portable code, rather than `wchar_t`.
+To address this issue, the C++11 standard introduced new character types, `char16_t` and `char32_t`, which have the same size as `uint_least16_t` and `uint_least32_t` (at least 16 and 32 bits, and in practice exactly 16 and 32 bits), and hold UTF-16 and UTF-32 code units, respectively. These types are recommended for use in portable code, rather than `wchar_t`.

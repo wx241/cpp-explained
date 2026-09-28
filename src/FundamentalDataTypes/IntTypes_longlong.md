@@ -8,7 +8,7 @@ As early as 1995, Roland Hartinger first proposed to add `long long`  to C++. At
 ## Bit size
 The C++ standard defines `long long` as an integer type that is at least 64 bits long, but it does not guarantee that `long long` will always be 64 bits on all platforms. The size of `long long` can depend on the architecture and the compiler being used. However, most modern platforms do support a 64-bit `long long` type. To ensure portability and avoid any potential issues, it's best to use the `sizeof` operator to determine the size of `long long` on a specific platform.
 
-Remember that in C++, `long long` is a signed data type, and its corresponding unsigned data type is `unsigned long long`. It's important to note that `long long int` and `unsigned long long int` have the same meaning as `long long` and `unsigned long long`, respectively, with the latter forms being shorthand for the former ones.
+Remember that in C++, `long long` is a signed data type, and its corresponding unsigned data type is `unsigned long long`. It's important to note that `long long int` and `unsigned long long int` have the same meaning as `long long` and `unsigned long long`, respectively, with `long long` and `unsigned long long` being shorthand for the longer forms.
 
 ## Literal suffix
 The C++ standard defines `LL` and `ULL` as literal suffixes for `long long` and `unsigned long long`, respectively. When initializing a `long long` type variable, you can write it like this:
@@ -26,13 +26,13 @@ long long x = 65536;
 When working with large integer values in C++, it is important to use literal suffixes to ensure that the code runs as intended. For example:
 
 ```cpp
-long long x = 65536 << 16; // Value overflows to 0
+long long x = 65536 << 16; // int shift: UB before C++20, 0 since C++20 (32-bit int)
 std::cout << "x = " << x << std::endl;
 long long y = 65536LL << 16;
 std::cout << "y = " << y << std::endl;
 ```
 
-The code `long long x = 65536 << 16` performs a bitwise left shift operation on the decimal value 65536 by 16 bits, which can result in an overflow and unexpected behavior.
+The code `long long x = 65536 << 16` performs a bitwise left shift operation on the decimal value 65536 by 16 bits. Both operands are `int`, so the shift is done in `int` before the result is converted to `long long`. With a 32-bit `int`, the mathematical result 2<sup>32</sup> does not fit: before C++20 this is undefined behavior, and since C++20 (which mandates two's complement) the result is well-defined but wraps to 0.
 
 To prevent overflowing, we should use the `LL` literal suffix to ensure that the value is treated as a `long long` data type, as in `long long y = 65536LL << 16`. This will ensure that the code runs as intended and the value is not unexpectedly truncated or overflowed.
 
@@ -47,6 +47,7 @@ We should avoid using `macro` as much as possible for defining the maximum and m
 
 Instead, we should use `std::numeric_limits`:
 ```cpp
+#include <climits>
 #include <iostream>
 #include <limits>
 #include <cstdio>

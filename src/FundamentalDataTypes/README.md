@@ -26,9 +26,9 @@ The following table lists the type specifiers of the fundamental data types in C
 `bool` is considered an integer type in C++, but it is often treated as a separate category due to its Boolean semantics.
 
 ## `signed char` and `unsigned char`
-In C++, the `char` type is considered a distinct type that can be used to represent individual characters in text string. It is technically not considered an integer type, but does have an integer representation according to the ASCII or Unicode standard, which allows it to be used for integer calculations in some context.
+In C++, the `char` type is considered a distinct type that can be used to represent individual characters in text string. It is an integral type, but it is not one of the "signed integer types" or "unsigned integer types"; its values are the code units of the execution character set (e.g. ASCII or UTF-8), which allows it to be used for integer calculations in some context.
 
-When `signed` or `unsigned` is applied to `char`, it creates a type for small integers that can hold values between 0 and 255 (or -128 to 127 in the case of signed char).Therefore, `signed char` and `unsigned char` are both considered integer types.
+When `signed` or `unsigned` is applied to `char`, it creates a type for small integers that can hold values between 0 and 255 (or -128 to 127 in the case of signed char). Therefore, `signed char` and `unsigned char` are both considered integer types.
 
 Note that `char` is a distinct type from `signed char` and `unsigned char`, and it is not guaranteed to be signed or unsigned. The signedness of `char` is implementation-defined, and it can vary depending on the platform and the compiler.
 
@@ -81,9 +81,11 @@ volatile int* ptr; // Pointer to a volatile int
 Using CV-correctness can help prevent errors and improve code safety by ensuring that functions and data members behave correctly in the presence of const and volatile objects.
 
 ## `mutable`
-In C++, mutable is a type specifier that can be used to declare a non-static data member that can be modified even if the containing object is declared `const`. This is useful when the variable represents a cache or temporary value that does not affect the state of the object.
+In C++, `mutable` is a specifier (grammatically, a storage-class specifier) that can be used to declare a non-static data member that can be modified even if the containing object is declared `const`. This is useful when the variable represents a cache or temporary value that does not affect the state of the object.
 
 ```cpp
+int someExpensiveCalculation();
+
 class Example {
 public:
     int getValue() const {
@@ -98,7 +100,7 @@ public:
 private:
     // Declared mutable to allow modification even 
     // if Example object is const
-    mutable int cachedValue_;
+    mutable int cachedValue_ = 0;
 };
 ```
 

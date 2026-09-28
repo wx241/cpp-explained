@@ -20,7 +20,7 @@ Unicode comprises 1,114,112 code points in the range [0, 1,114,111]. The maximum
 
 Encoding involves mapping each code point to a specific sequence of bits or bytes that can be used to represent that character in digital form.
 
-The Unicode standard defines a character set that includes 1,114,111 characters, each with a unique code point, and provides several encoding schemes, including UTF-8, UTF-16, and UTF-32, that allow characters to be represented using variable-length sequences of bytes.
+The Unicode standard defines a code space of 1,114,112 code points and provides several encoding schemes, including UTF-8, UTF-16, and UTF-32. UTF-8 and UTF-16 represent characters using variable-length sequences of code units, while UTF-32 is fixed-length.
 
 ### *UTF-8 encoding*
 UTF-8 is a variable-length encoding scheme. It works by mapping each Unicode code point to a sequence of 1 to 4 bytes, depending on the code point value. 
@@ -28,8 +28,8 @@ UTF-8 is a variable-length encoding scheme. It works by mapping each Unicode cod
 | Code Point Range | Number of Bytes | Binary Format |
 | --- | --- | --- |
 | 0 to 127 | 1 byte | `0xxx'xxxx` |
-| 128 to 2047 | 2 bytes | `110x'xxxx, 10xx'xxxx` |
-| 2048 to 65535 | 3 bytes | `111'0xxxx 10x'xxxxx 10xx'xxxx` |
+| 128 to 2047 | 2 bytes | `110x'xxxx 10xx'xxxx` |
+| 2048 to 65535 | 3 bytes | `1110'xxxx 10xx'xxxx 10xx'xxxx` |
 | 65536 to 1114111 | 4 bytes | `1111'0xxx 10xx'xxxx 10xx'xxxx 10xx'xxxx` |
 
 Here's how UTF-8 encoding works:
@@ -60,7 +60,7 @@ UTF-8 has unique patterns with the first byte, and a fixed pattern with trailing
 
 | Code Point Range | Number of Code Units | Binary Format |
 | --- | --- | --- |
-| 0 to 1114111 | 1 code unit (4 bytes) | `00000000 xxxxxxxx xxxxxxxx xxxxxxxx` |
+| 0 to 1114111 | 1 code unit (4 bytes) | `00000000 000xxxxx xxxxxxxx xxxxxxxx` |
 
 
 UTF-32 encoding represents each code point using a single 32-bit code unit, which means that every Unicode code point is represented using exactly 4 bytes of memory.
@@ -106,5 +106,3 @@ The following table lists Windows code pages used by Microsoft in its own Window
 | UTF-32LE                | 12000            | 32-bit Unicode, Little Endian              |
 | UTF-32BE                | 12001            | 32-bit Unicode, Big Endian                 |
 | UTF-7                   | 65000            | 7-bit Unicode                              |
-| UTF-1                   | 12000            | 8-bit Unicode                              |
-| UTF-EBCDIC              | 1200             | EBCDIC-based Unicode                       |
