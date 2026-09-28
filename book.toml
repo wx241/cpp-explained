@@ -7,6 +7,7 @@ title = "Modern C++ Explained"
 
 [output.html]
 additional-css      = [ "section-lines.css" , "version-commit.css" ]
+additional-js       = [ "compiler-explorer.js" ]
 curly-quotes        = false
 git-repository-url  = "https://github.com/wx241/cpp-explained"
 edit-url-template   = "https://github.com/wx241/cpp-explained/edit/main/{path}"

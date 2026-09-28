@@ -6,6 +6,7 @@ Source for the book **[Modern C++ Explained](https://wx241.github.io/cpp-explain
 
 - Chapters live in `src/`; the table of contents is `src/SUMMARY.md`.
 - Preview locally with live reload: run `run.bat` (Windows) or `mdbook serve --open`, then open http://localhost:3000.
+- Every C/C++ code block gets an "Open in Compiler Explorer" button (`compiler-explorer.js`). Complete programs open with an execution pane; fragments open compile-only. The compiler and flags are set at the top of that script.
 - File and folder names are case-sensitive on the build server — make links in `SUMMARY.md` match the exact casing on disk.
 
 ## Publishing
