@@ -1,3 +1,5 @@
+# `constexpr` Lambdas
+
 In C++17, lambda expressions can be used as `constexpr` by default, meaning they can be evaluated at compile-time. This feature enables developers to perform computations at compile-time, reducing runtime overhead and improving performance in certain cases. It can also make the code more readable and easier to understand.
 
 Lambda expressions are anonymous functions that can be defined and used within code. They have the following general syntax:
@@ -35,7 +37,7 @@ int main() {
 
 4. **Better optimization**: Since the lambda is evaluated at compile-time, the compiler has more opportunities to optimize the code further.
 
-5. **Enhanced safety**: Using `constexpr` ensures that the lambda can only be used in constant expressions, which can help catch errors early in the development process.
+5. **Enhanced safety**: When a lambda is evaluated in a constant expression (for example in a `static_assert`), undefined behavior such as overflow or out-of-bounds access becomes a compile error, which can help catch errors early in the development process. Explicitly writing `[](int x) constexpr { ... }` also makes the compiler reject a body that can never be constant-evaluated. (A lambda that may *only* be used at compile time is a `consteval` lambda, since C++20.)
 
 ## Runtime degrading
 
@@ -60,7 +62,7 @@ int result = lambda(5); // This will be evaluated at runtime
 #include <cmath>
 
 constexpr auto sqrt_lambda = [](double x) {
-    return std::sqrt(x); // std::sqrt is not constexpr (prior to C++20)
+    return std::sqrt(x); // std::sqrt is not constexpr (until C++26)
 };
 
 int main() {
@@ -73,6 +75,8 @@ int main() {
 3. Using the lambda in a non-`constexpr` context: Even if the lambda itself is `constexpr`, if it is used in a context that doesn't require a constant expression, it will be evaluated at runtime. For example:
 
 ```cpp
+#include <iostream>
+
 constexpr auto square = [](int x) {
     return x * x;
 };

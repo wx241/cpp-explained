@@ -27,7 +27,8 @@ consteval int multiply(int x, int y) {
 
 int main() {
     constexpr int result1 = add(3, 4);        // Evaluates at compile-time
-    consteval int result2 = multiply(5, 6);   // Evaluates at compile-time
+    constexpr int result2 = multiply(5, 6);   // Evaluates at compile-time
+                                              // (consteval applies only to functions)
 
     int x = 2, y = 3;
     int result3 = add(x, y);                  // Evaluates at runtime
@@ -46,7 +47,7 @@ The `constinit` specifier is introduced in C++20 to qualify a variable with stat
 
 - `constinit` forces constant initialization of static or thread-local variables. It can help to limit static order initialization fiasco by using precompiled values and well-defined order rather than dynamic initialization and linking order
 
-- `constinit` does not mean that the object is immutable. `constinit` variable cannot be used in constant expressions
+- `constinit` does not mean that the object is immutable. A non-const `constinit` variable cannot be used in constant expressions (a `constinit const` variable of integral type can)
 
 ```cpp
 #include <array>
@@ -78,7 +79,7 @@ main:
  nop    DWORD PTR [rax+rax*1+0x0]
  ```
 
-The following table summaries all `const` specifiers ([credit: Bartłomiej Filipek](https://www.cppstories.com/2022/const-options-cpp20/))
+The following table summarizes all `const` specifiers ([credit: Bartłomiej Filipek](https://www.cppstories.com/2022/const-options-cpp20/))
 
 | Keyword    | On Auto Variables | On Static/Thread_Local Variables | On Functions          | On Constant Expressions |
 |------------|------------------|----------------------------------|-----------------------|-------------------------|

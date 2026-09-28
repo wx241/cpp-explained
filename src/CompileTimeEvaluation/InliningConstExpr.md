@@ -3,7 +3,7 @@
 
 In C++17, a `constexpr` static data member is implicitly `inline`. This means that the static data member has the same address in every translation unit that uses it, and there is no need to provide a separate definition for the data member in a source file. 
 
-The following example would produce a linker error pre-C++ 17:
+The following example would produce a linker error pre-C++17:
 
 ```cpp
 // MyClass.h
@@ -50,7 +50,7 @@ public:
 };
 ```
 
-The following code will not produce a linker error for pre-C++17. This is because the compilier just does a compile time replacement for the line `std::cout << "Value of myConstExpr: " << MyClass::myConstExpr << std::endl;`, directly replacing ` MyClass::myConstExpr` with `42`. There is no addressing involved, hence no linker error.
+The following code will not produce a linker error for pre-C++17. This is because the compiler just does a compile time replacement for the line `std::cout << "Value of myConstExpr: " << MyClass::myConstExpr << std::endl;`, directly replacing ` MyClass::myConstExpr` with `42`. There is no addressing involved, hence no linker error.
 
 ```cpp
 // MyClass.h

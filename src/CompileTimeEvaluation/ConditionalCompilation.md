@@ -48,15 +48,21 @@ While `if constexpr` can sometimes be used to achieve similar conditional behavi
 
 ## Short-circuit behavior
 
-Unlike regular `if` statements, where the short-circuit behavior applies to the evaluation of the condition, `if constexpr` evaluates the condition at compile-time, and all branches are checked for syntactic correctness regardless of the condition's value.
+The condition of `if constexpr` must be a constant expression (contextually converted to `bool`). Within it, `&&` and `||` short-circuit as usual, but short-circuiting only skips *evaluation*; it does not skip *substitution*. Every operand must still be well-formed for the given template arguments.
 
 In this example:
 
 ```cpp
+#include <type_traits>
+
+struct HasFlag { static constexpr bool enabled = true; };
+
 template <typename T>
 void foo(T value) {
-    if constexpr (std::is_integral_v<T> && (value > 0)) {
-        // Code specific to integral types and positive values
+    // Error for T = int: even though is_class_v<int> is false,
+    // T::enabled is still substituted, and int::enabled is ill-formed.
+    if constexpr (std::is_class_v<T> && T::enabled) {
+        // Code specific to class types that opt in
         // ...
     } else {
         // Code for other cases
@@ -65,21 +71,29 @@ void foo(T value) {
 }
 ```
 
-Both `std::is_integral_v<T>` and `(value > 0)` will be evaluated during compilation, regardless of the outcome of the condition. This means that any type-dependent or invalid code inside the discarded branch may still lead to compilation errors.
+`foo(HasFlag{})` compiles, but `foo(42)` does not. Also note that a runtime value such as the parameter `value` can never appear in the condition, because the condition must be a constant expression. To make the example work for every `T`, nest the checks: `if constexpr (std::is_class_v<T>) { if constexpr (T::enabled) { ... } }`.
 
 ## Branch elimination
 
-In an `if constexpr` statement, the condition is evaluated at compile-time. If the condition is determined to be `false` during compilation, the code inside the branch that is not taken (either `if` or `else`) is discarded by the compiler. The discarded branch is not checked for syntactic correctness or compiled.
+In an `if constexpr` statement, the condition is evaluated at compile-time. If the condition is determined to be `false` during compilation, the code inside the branch that is not taken (either `if` or `else`) is discarded by the compiler. The discarded branch is still *parsed*, so it must be syntactically valid. Inside a template, however, a discarded statement is not *instantiated*, so code that would be ill-formed for the current template arguments (such as calling a member the type does not have) is not an error. Outside a template, both branches are fully checked.
 
 This compile-time evaluation and branch elimination make `if constexpr` useful for conditional compilation and optimizing code based on compile-time conditions.
 
-By discarding the unused branch, the compiler avoids checking its syntax and does not generate any corresponding object code. This can help improve the compile time and reduce the size of the resulting binary executable.
+By discarding the unused branch, the compiler avoids instantiating it and does not generate any corresponding object code. This can help improve the compile time and reduce the size of the resulting binary executable.
 
 ## Always provide `else` branch
 
 It is generally a good practice to provide an `else` branch or alternative handling for all possible cases in an `if constexpr` statement to avoid potential runtime issues and ensure that all scenarios are properly handled.
 
 ```cpp
+#include <cmath>
+#include <type_traits>
+
+// Before C++23, static_assert(false) in a discarded branch is ill-formed,
+// so the condition is made dependent on T.
+template<class>
+inline constexpr bool always_false = false;
+
 template<class T>
 auto subtract(T a, T b) {
     if constexpr (std::is_same<T, double>::value) {
@@ -91,11 +105,11 @@ auto subtract(T a, T b) {
     } else if constexpr (std::is_integral<T>::value) {
         return a - b;
     } else {
-        static_assert(always_false<T>::value, "Non-handled type for subtract function");
+        static_assert(always_false<T>, "Non-handled type for subtract function");
     }
 }
 ```
 
-In this code, both double and integral types are explicitly handled. If a type is used that is neither double nor an integral type, the static_assert will trigger a compile-time error with a clear message, which is generally preferable to a more obscure error about invalid operations. This is a more defensive programming strategy that makes sure all potential types are handled.
+In this code, both double and integral types are explicitly handled. If a type is used that is neither double nor an integral type, the static_assert will trigger a compile-time error with a clear message (since C++23, [P2593](https://wg21.link/P2593), a plain `static_assert(false, ...)` works here too), which is generally preferable to a more obscure error about invalid operations. This is a more defensive programming strategy that makes sure all potential types are handled.
 
 

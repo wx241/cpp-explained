@@ -17,7 +17,10 @@ constexpr int x = 5;
 // y is computed at compile time
 constexpr int y = square(x); 
 
-// z is computed at run time
+// z is also initialized at compile time (constant initialization),
+// because square(6) is a constant expression. Unlike constexpr,
+// however, const does not *require* it: const int w = f(); with a
+// non-constexpr f() is allowed and initializes w at run time.
 const int z = square(6); 
 
 constexpr int arr_size = 10;
@@ -35,16 +38,16 @@ static_assert(c == 'B', "c should be equal to 'B'");
 
 To make a function `constexpr`, it must meet the following conditions:
 
-1. **Must have a Non-void return type.**
+1. **Must have a literal return type.**
 
 ```cpp
-// Must return a non-void type, like int here
+// Returns a literal type, like int here
 constexpr int square(int x) { 
     return x * x;
 }
 ```
 
-A `constexpr` function cannot have a return type of `void`, as it must produce a constant expression.
+In C++11, a `constexpr` function could not have a return type of `void`. Since C++14, `void` is allowed (see [`constexpr` function returning `void`](#constexpr-function-returning-void) below).
 
 2. **Must be defined with `constexpr` keyword.**
 
@@ -55,27 +58,23 @@ constexpr int factorial(int n) {
 }
 ```
 
-3. **Must not contain any definitions of variables with non-const-qualified types**, unless they are initialized with a constant expression:
+3. **Local variables must be of literal type** (and, until C++20, must be initialized). In C++11 the body of a `constexpr` function could contain essentially only a single `return` statement, so no local variables were allowed at all. Since C++14, any local variable of literal type is allowed, `const` or not, and its initializer does not have to be a constant expression. It must not be `static` or `thread_local` (until C++23).
 
 ```cpp
-// Must use const-qualified type.
+// C++11 style: a single return statement
 constexpr int sum(int a, int b) {
-    const int result = a + b; 
-    return result;
+    return a + b;
 }
 
-// Non-const variables are allowed as long as they are 
-// initialized with a const expression.
-// This is only valid when (a + b) produces a constant
-// expression.
+// Since C++14: ordinary (non-const) local variables are fine
 constexpr int add(int a, int b) {
-    // 'sum' is initialized with a constant expression (a + b)
     int sum = a + b; 
+    sum *= 2;
     return sum;
 }
 ```
 
-4. **May include control structures and constructs,** such as `if`, `switch`, `for`, `while`, and `do-while` loops, provided they don't violate other `constexpr` constraints. `static_assert`, `typedef`, `using`, `if constexpr`, and `return`are also allowed.
+4. **May include control structures and constructs** (since C++14), such as `if`, `switch`, `for`, `while`, and `do-while` loops, provided they don't violate other `constexpr` constraints. `static_assert`, `typedef`, `using`, `if constexpr`, and `return`are also allowed.
 
 
 ```cpp
@@ -153,7 +152,7 @@ main:
         ret
 ```
 
-7. **Can modify `constexpr` object that has a lifetime extends longer than the `constexpr` function**.
+7. **Since C++14, may modify objects whose lifetime began within the evaluation** (for example parameters and local variables). It cannot modify a global object that exists outside the constant evaluation.
 
 ```cpp
 constexpr int next(int x)
@@ -172,7 +171,7 @@ char buffer[next(5)] = { 0 };
 
 Conditions (or constraints) for `constexpr` constructors:
 
-1. The constructor must not be a copy or move constructor.
+1. The class must not have any virtual base classes. (Copy and move constructors *can* be `constexpr`; a defaulted one is implicitly `constexpr` when it meets the requirements.)
 2. Every expression and construct used in the constructor must be a constant expression.
 3. Every base class and member of the class must have a `constexpr` constructor.
 4. Every constructor call and full-expression in the constructor's member initializers must be a constant expression.
@@ -237,11 +236,11 @@ int main() {
 
 ## Destructor
 
-If a class has a `constexpr` constructor and is meant to be used in a `constexpr` context, then the destructor should be trivial. A trivial destructor does not perform any custom actions, allowing the object to be safely used in a `constexpr` context. 
+If a class has a `constexpr` constructor and is meant to be used in a `constexpr` context, then until C++20 the destructor must be trivial. A trivial destructor does not perform any custom actions, allowing the object to be safely used in a `constexpr` context. Since C++20 ([P0784](https://wg21.link/P0784)), a destructor can also be declared `constexpr` and do non-trivial work, which is what makes `constexpr` `std::vector` and `std::string` possible.
 
 > A destructor is considered trivial if:
 > 1. It is not user-provided (i.e., the compiler generates the destructor implicitly).
-> 2. The class has no virtual functions or virtual base classes.
+> 2. The destructor is not virtual.
 > 3. All direct base classes have trivial destructors.
 > 4. For all non-static data members of the class that are of class type (or array thereof), each such class has a trivial destructor.
 
@@ -270,42 +269,45 @@ int main() {
 
 ## `constexpr` function returning `void`
 
-A member function of a class can be declared `constexpr` and have a return type of `void`, for performing a sequence of actions at compile time. For example:
+Since C++14, a function (including a member function) can be declared `constexpr` and have a return type of `void`, for performing a sequence of actions at compile time. Because a `constexpr` object is `const`, such a non-const member function is called on an object *during* constant evaluation, typically inside another `constexpr` function. For example:
 
 ```cpp
 class MyClass {
 public:
     constexpr void doSomething() {
-        myData = 42; // Set a constexpr data member
+        myData = 42; // Modify a data member
     }
 
     constexpr int getMyData() const {
-        return myData; // Return the value of the constexpr data member
+        return myData;
     }
 
 private:
-    int myData = 0; // Define a constexpr data member
+    int myData = 0; // An ordinary non-static data member
 };
 
+constexpr MyClass make() {
+    MyClass m;
+    m.doSomething(); // Evaluated at compile time when make() is
+    return m;
+}
+
 int main() {
-    constexpr MyClass obj;
-    obj.doSomething(); // This call is evaluated at compile time
+    constexpr MyClass obj = make();
     static_assert(obj.getMyData() == 42, "Unexpected value of myData");
 }
 ```
 
-Note that `constexpr void doSomething()` does not have to be qualified with `const`.
+Note that `constexpr void doSomething()` does not have to be qualified with `const` (since C++14, `constexpr` member functions are no longer implicitly `const`).
 
 ## Precision of floating-point `constexpr`
 
 In C++11 and later, `constexpr` functions can compute floating-point expressions and return floating-point values as constant expressions.
 
-> One limitation of `constexpr` floating-point computations is that they must terminate in a finite number of steps known at compile time, which means that they cannot compute certain mathematical functions or operations that require an infinite number of steps or iterations. Because of this, the use of functions like `std::sin` and `std::sqrt` within `constexpr` functions is not allowed inside `constexpr` function.
+> Library functions like `std::sin` and `std::sqrt` cannot be used inside a `constexpr` evaluation simply because they are not declared `constexpr` in the standard library (until C++26; see [Math functions](MathFunctions.md)). There is nothing inherently "infinite" about them: you can write your own `constexpr` square root with a loop.
 > 
-> Additionally, the standard imposes specific requirements on the rounding behavior of constexpr floating point operations. For example, if a constexpr floating point operation results in a value that cannot be represented exactly, the result must be rounded in a manner consistent with the floating point rounding mode specified by the implementation.
+> An operation whose result is not mathematically defined or not representable (for example one that overflows or would raise a floating-point exception) is not a constant expression.
 
-The C++ standard requires that `constexpr` functions produce the same results as their non-`constexpr` counterparts when called with the same arguments.
-
-This means that if a non-`constexpr` function performs a floating point computation with a certain precision, a `constexpr` function that performs the same computation must produce a result that is at least as precise. The standard does not specify a minimum level of precision, but it requires that the result of a `constexpr` floating point computation be consistent and reproducible, so that the same result is obtained every time the computation is performed.
+The C++ standard does **not** require that compile-time and run-time floating-point evaluation give identical results. [expr.const] explicitly says it is unspecified whether a floating-point expression evaluated at translation time yields the same value as the same expression evaluated during program execution (for example, the compiler may use a different precision or ignore the run-time rounding mode).
 
 In practice, the precision of `constexpr` floating point computations will depend on the compiler and the platform being used. In general, compilers will try to produce `constexpr` results that are as precise as possible, but there may be cases where the precision is lower than the runtime counterpart due to limitations of the compiler or platform.

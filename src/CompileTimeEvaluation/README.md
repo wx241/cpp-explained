@@ -33,13 +33,13 @@ The following shows a picture of NEMA-TS2 16-channel Malfunction Management Unit
 
 The following illustrates an application of C++ compile time evaluation approach. It is part of the open source C++ [Virtual Traffic Cabinet Framework (VTC)](https://github.com/wxinix/vtc). VTC framework is developed using modern C++ 20.
 
-The code provides O(1) complexity for returning the start position of a given channel. Note the template functions have zero runtime overhead, while all searching are done at compile time. Apart from the performance benefits, the implementation is concise and generic for any sizable current or future evoluation of MMU compatibility cards.
+The code provides O(1) complexity for returning the start position of a given channel. Note the template functions have zero runtime overhead, while all searching is done at compile time. Apart from the performance benefits, the implementation is concise and generic for any sizable current or future evolution of MMU compatibility cards.
 
 ```cpp
 /*!
  * The size of channel compatibility set. For example, for Channel 1 of MMU16,
  * its compatibility set includes 1-2, 1-3, 1-4, ..., 1-16, thus the size is 15.
- * @tparam Channel - The given MMU chanel.
+ * @tparam Channel - The given MMU channel.
  * @tparam MaxChannel - Max number of channels the MMU supports.
  * @return The size of the compatibility set of the given channel.
  */
@@ -66,7 +66,7 @@ constexpr size_t ChannelSegmentStartPos()
   } else if constexpr (Channel == 2) {
     return ChannelSegmentSize<1, MaxChannel>();
   } else {
-    return ChannelSegmentSize<Channel - 1, MaxChannel>() + ChannelSegmentStartPos<Channel - 1>();
+    return ChannelSegmentSize<Channel - 1, MaxChannel>() + ChannelSegmentStartPos<Channel - 1, MaxChannel>();
   }
 }
 ```

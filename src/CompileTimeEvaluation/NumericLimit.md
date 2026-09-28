@@ -6,30 +6,30 @@ The `std::numeric_limits` class template has the following general syntax:
 
 ```cpp
 template<typename T>
-class numeric_limits {
+class numeric_limits {  // primary template (abridged)
 public:
-    static constexpr bool is_specialized;
+    static constexpr bool is_specialized = false;
     static constexpr T min() noexcept;
     static constexpr T max() noexcept;
     static constexpr T lowest() noexcept;
-    static constexpr int digits;
-    static constexpr int digits10;
-    static constexpr int max_digits10;
-    static constexpr bool is_signed;
-    static constexpr bool is_integer;
-    static constexpr bool is_exact;
-    static constexpr int radix;
+    static constexpr int digits = 0;
+    static constexpr int digits10 = 0;
+    static constexpr int max_digits10 = 0;
+    static constexpr bool is_signed = false;
+    static constexpr bool is_integer = false;
+    static constexpr bool is_exact = false;
+    static constexpr int radix = 0;
     static constexpr T epsilon() noexcept;
     static constexpr T round_error() noexcept;
-    static constexpr int min_exponent;
-    static constexpr int min_exponent10;
-    static constexpr int max_exponent;
-    static constexpr int max_exponent10;
-    static constexpr bool has_infinity;
-    static constexpr bool has_quiet_NaN;
-    static constexpr bool has_signaling_NaN;
-    static constexpr float_denorm_style has_denorm;
-    static constexpr bool has_denorm_loss;
+    static constexpr int min_exponent = 0;
+    static constexpr int min_exponent10 = 0;
+    static constexpr int max_exponent = 0;
+    static constexpr int max_exponent10 = 0;
+    static constexpr bool has_infinity = false;
+    static constexpr bool has_quiet_NaN = false;
+    static constexpr bool has_signaling_NaN = false;
+    static constexpr float_denorm_style has_denorm = denorm_absent;  // deprecated in C++23
+    static constexpr bool has_denorm_loss = false;              // deprecated in C++23
     static constexpr T infinity() noexcept;
     static constexpr T quiet_NaN() noexcept;
     static constexpr T signaling_NaN() noexcept;
